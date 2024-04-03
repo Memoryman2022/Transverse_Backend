@@ -8,7 +8,7 @@ const userSchema = new Schema({
   spokenLanguages: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+      // required: true,
       ref: "Language",
     },
   ],
