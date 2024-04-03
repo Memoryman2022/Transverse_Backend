@@ -3,7 +3,9 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
+require("dotenv").config();
 
+const PORT = process.env.PORT;
 app.use(express.json());
 app.use(morgan("dev"));
 
@@ -20,6 +22,6 @@ app.use(
   })
 );
 
-app.listen(5005, () => {
-  console.log(5005, PORT);
+app.listen(PORT, () => {
+  console.log("Listening to port", PORT);
 });
