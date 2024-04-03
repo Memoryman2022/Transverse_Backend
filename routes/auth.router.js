@@ -58,19 +58,7 @@ router.post("/registration", (req, res) => {
     });
 });
 
-// //check if input email already exists
-// User.findOne({ email }).then((foundUser) => {
-//   //if so send error response
-//   if (foundUser) {
-//     res.status(400).json({ message: "User already exists." });
-//     return;
-//   }
-//   //if email not found proceed to hash the password
-//   const salt = by;
-// });
-
-//Post /auth/login
-
+//Post /login
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -82,7 +70,7 @@ router.post("/login", async (req, res) => {
 
     const passwordMatch = await bcrypt.compare(password, existingUser.password);
     if (!passwordMatch) {
-      return res.status(400).json({ message: "Incorrect  password" });
+      return res.status(400).json({ message: "Incorrect password" });
     }
     const token = jwt.sign(
       { userId: existingUser._id },
@@ -100,9 +88,7 @@ router.post("/login", async (req, res) => {
 const { isAuthenticated } = require("../middleware/auth.js");
 
 router.get("/verify", isAuthenticated, (req, res) => {
-  const { _id, userName, email } = req.body;
-
-  res.status(200).json({ _id, userName, email });
+  res.status(200).json(req.payload);
 });
 
 //export router
