@@ -7,9 +7,8 @@ const User = require("../models/User.model.js");
 const router = express.Router();
 const saltRounds = 10;
 
-//Post /auth/signup
-
-router.post("/registration", async (req, res) => {
+//Post /registration
+router.post("/registration", (req, res) => {
   const { userName, email, password } = req.body;
 
   //check userName/email/password is empty
@@ -34,27 +33,29 @@ router.post("/registration", async (req, res) => {
     });
   }
 
-  try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "User not found" });
-    }
+  User.findOne({ email })
+    .then((existingUser) => {
+      if (existingUser) {
+        res.status(400).json({ message: "Invalid email address" });
+        return;
+      }
 
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+      const salt = bcrypt.genSaltSync(saltRounds);
 
-    const newUser = new User({
-      userName,
-      email,
-      password: hashedPassword,
+      const hashedPassword = bcrypt.hashSync(password, salt);
+
+      return User.create({ email, password: hashedPassword, userName });
+    })
+    .then((createdUser) => {
+      const { email, userName, _id } = createdUser;
+
+      const user = { email, userName, _id };
+      res.status(201).json({ user: user });
+    })
+    .catch((err) => {
+      console.error("Error registering user:", err);
+      res.status(500).json({ message: "Internal server error" });
     });
-
-    await newUser.save;
-
-    res.status(200).json({ message: "New user successfully created" });
-  } catch (err) {
-    console.error("Error registering user:", err);
-    res.status(500).json({ message: "Internal server error" });
-  }
 });
 
 // //check if input email already exists
