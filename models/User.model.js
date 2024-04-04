@@ -12,7 +12,7 @@ const userSchema = new Schema({
       ref: "Language",
     },
   ],
-  hostedLanguages: [{ type: "String" }],
+  hostedLanguages: [{ type: "String" }], // TODO: Also reference Language
   location: { type: "String" },
 });
 

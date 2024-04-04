@@ -4,7 +4,7 @@ const { Schema, model } = mongoose;
 const offerSchema = new Schema({
   title: { type: String, required: true }, //presentation
   description: { type: String, required: true }, // size, location, proximity to supermarket
-  location: { type: String, required: true }, // mapping
+  location: { type: String, required: true }, // mapping TODO: Find out if String type or something else?
   availableLanguages: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -20,4 +20,4 @@ const offerSchema = new Schema({
 });
 
 module.exports = model("Offer", offerSchema);
-//images?
+//images? Yes!

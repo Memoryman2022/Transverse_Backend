@@ -8,7 +8,7 @@ const router = express.Router();
 const saltRounds = 10;
 
 //Post /registration
-router.post("/registration", (req, res) => {
+router.post("/auth/registration", (req, res) => {
   const { userName, email, password } = req.body;
 
   //check userName/email/password is empty
@@ -59,7 +59,7 @@ router.post("/registration", (req, res) => {
 });
 
 //Post /login
-router.post("/login", async (req, res) => {
+router.post("/auth/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -87,7 +87,7 @@ router.post("/login", async (req, res) => {
 //Get /auth/verify
 const { isAuthenticated } = require("../middleware/auth.js");
 
-router.get("/verify", isAuthenticated, (req, res) => {
+router.get("/auth/verify", isAuthenticated, (req, res) => {
   res.status(200).json(req.payload);
 });
 
