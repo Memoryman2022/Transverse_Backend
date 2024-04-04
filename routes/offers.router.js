@@ -2,19 +2,43 @@ const express = require("express");
 const router = express.Router();
 
 const Offer = require("../models/Offer.model");
+const User = require("../models/User.model");
 // const Location = require("./models/Location.model");
 
 // post to create new offer
 router.post("/api/offers", (req, res) => {
   //check REQ.BODY!!!
-  Offer.create({})
-    .then((createdOffer) => {
-      console.log("offer was added", createdOffer);
-      res.status(201).json(createdOffer);
+  const { host } = req.body;
+
+  User.findOne({ userName: host })
+    .then((aHost) => {
+      // If user not found, return error
+      if (!aHost) {
+        return res.status(400).json({ message: "No such user" });
+      }
+
+      // Create a new Offer instance with the host's ID
+      const newOffer = new Offer({
+        title: req.body.title,
+        description: req.body.description,
+        host: aHost._id, // Assign the host's ID
+      });
+
+      // Save the new offer
+      newOffer
+        .save()
+        .then((createdOffer) => {
+          console.log("Offer was added", createdOffer);
+          res.status(201).json(createdOffer);
+        })
+        .catch((error) => {
+          console.error("Impossible to create the offer", error);
+          res.status(500).json({ error: "Could not create the offer" });
+        });
     })
-    .catch((error) => {
-      console.error("impossible to create the offer", error);
-      res.status(500).json({ error: "could not create the offer" });
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: "Internal server error" });
     });
 });
 
