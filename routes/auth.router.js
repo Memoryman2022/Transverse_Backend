@@ -3,89 +3,81 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/User.model.js");
+const AppError = require("../middleware/error-handling");
+const { isAuthenticated } = require("../middleware/auth.js");
 
 const router = express.Router();
 const saltRounds = 10;
 
 //Post /registration
-router.post("/auth/registration", (req, res) => {
-  const { userName, email, password } = req.body;
+router.post("/auth/registration", async (req, res, next) => {
+  try {
+    const { userName, email, password } = req.body;
 
-  //check userName/email/password is empty
-  if (userName === "" || email === "" || password === "") {
-    res
-      .status(400)
-      .json({ message: "Please fill out the registration fields" });
-    return;
-  }
+    if (userName === "" || email === "" || password === "") {
+      throw new AppError("Please fill out the registration fields", 400);
+    }
 
-  const emailRegex = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/);
-  if (!emailRegex.test(email)) {
-    res.status(400).json({ message: "email must be a valid email" });
-    return;
-  }
+    const emailRegex = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/);
+    if (!emailRegex.test(email)) {
+      throw new AppError("Email must be a valid email", 400);
+    }
 
-  const passwordRegex = new RegExp(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/);
-  if (!passwordRegex.test(password)) {
-    res.status(400).json({
-      message:
+    const passwordRegex = new RegExp(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/);
+    if (!passwordRegex.test(password)) {
+      throw new AppError(
         "Password must have at least 6 characters and contain at least one number, one lowercase and one uppercase letter.",
+        400
+      );
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      throw new AppError("Email already in use", 400);
+    }
+
+    const hashedPassword = bcrypt.hashSync(
+      password,
+      bcrypt.genSaltSync(saltRounds)
+    );
+    const createdUser = await User.create({
+      email,
+      password: hashedPassword,
+      userName,
     });
+    const { _id } = createdUser;
+    res.status(201).json({ user: { email, userName, _id } });
+  } catch (err) {
+    next(err);
   }
-
-  User.findOne({ email })
-    .then((existingUser) => {
-      if (existingUser) {
-        res.status(400).json({ message: "Invalid email address" });
-        return;
-      }
-
-      const salt = bcrypt.genSaltSync(saltRounds);
-
-      const hashedPassword = bcrypt.hashSync(password, salt);
-
-      return User.create({ email, password: hashedPassword, userName });
-    })
-    .then((createdUser) => {
-      const { email, userName, _id } = createdUser;
-
-      const user = { email, userName, _id };
-      res.status(201).json({ user: user });
-    })
-    .catch((err) => {
-      console.error("Error registering user:", err);
-      res.status(500).json({ message: "Internal server error" });
-    });
 });
 
 //Post /login
-router.post("/auth/login", async (req, res) => {
-  const { email, password } = req.body;
-
+router.post("/auth/login", async (req, res, next) => {
   try {
+    const { email, password } = req.body;
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
-      return res.status(400).json({ message: "User not found" });
+      throw new AppError("User not found", 400);
     }
 
     const passwordMatch = await bcrypt.compare(password, existingUser.password);
     if (!passwordMatch) {
-      return res.status(400).json({ message: "Incorrect password" });
+      throw new AppError("Incorrect password", 400);
     }
+
     const token = jwt.sign(
       { userId: existingUser._id },
       process.env.JWT_SECRET,
       { expiresIn: "6h" }
     );
-
     res.status(200).json({ token });
   } catch (err) {
-    console.log(error);
+    next(err);
   }
 });
 
 //Get /auth/verify
-const { isAuthenticated } = require("../middleware/auth.js");
 
 router.get("/auth/verify", isAuthenticated, (req, res) => {
   res.status(200).json(req.payload);

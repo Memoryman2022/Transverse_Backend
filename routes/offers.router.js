@@ -23,7 +23,7 @@ router.get("/api/offers", (req, res, next) => {
   Offer.find()
     .populate("offers")
     .then((offers) => {
-      res.json(offers);
+      res.status(200).json({ offers: offers });
     })
     .catch((error) => {
       next(error);
