@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const ReviewModel = require("../models/Review.model");
-const AppError = require("../middleare/error-handling");
+const AppError = require("../middleware/error-handling");
 
 //Post
 router.post("/create-a-review", async (req, res, next) => {
