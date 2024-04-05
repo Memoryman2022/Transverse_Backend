@@ -17,12 +17,12 @@ const offerSchema = new Schema({
   // type: Date,
   // required: true
   // },
-  //first avail date
+  // first avail date
   // availableUntil: {
   // type: Date,
   // required: true
   // },
-  // utilities: { type: String, default: [] },
+  // utilities: { type: [String], default: [] },
   host: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 });
 
