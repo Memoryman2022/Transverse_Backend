@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User.model");
 const mongoose = require("mongoose");
-const AppError = require("../middleware/error-handling");
+const { AppError } = require("../middleware/error-handling");
 
 // retrieve specific user by ID
 router.get("/:userId", async (req, res, next) => {

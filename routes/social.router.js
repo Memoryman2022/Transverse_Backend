@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const AppError = require("../middleware/error-handling");
+const { AppError } = require("../middleware/error-handling");
 
 const SocialModel = require("../models/Social.model");
 
