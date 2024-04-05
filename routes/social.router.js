@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { AppError } = require("../middleware/error-handling");
 const User = require("../models/User.model");
-const SocialModel = require("../models/Social.model");
+const Social = require("../models/Social.model");
 
 // post
 router.post("/api/social", async (req, res, next) => {
@@ -11,7 +11,7 @@ router.post("/api/social", async (req, res, next) => {
 
     const userId = await User.find({ email: user });
 
-    const socialPost = new SocialModel({
+    const socialPost = new Social({
       user: userId._id,
       image,
       likes: 0,
@@ -34,7 +34,7 @@ router.post("/api/social", async (req, res, next) => {
 //   get
 router.get("/api/social", async (req, res, next) => {
   try {
-    const socialPosts = await SocialModel.find();
+    const socialPosts = await Social.find();
 
     res.status(200).json({ posts: socialPosts });
   } catch (error) {
@@ -46,7 +46,7 @@ router.get("/api/social", async (req, res, next) => {
 router.put("/api/social/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const updatedSocial = await SocialModel.findByIdAndUpdate(id, req.body, {
+    const updatedSocial = await Social.findByIdAndUpdate(id, req.body, {
       new: true,
     });
     if (!updatedSocial) {
@@ -64,7 +64,7 @@ router.put("/api/social/:id", async (req, res, next) => {
 router.delete("/api/social/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const deletedSocial = await SocialModel.findByIdAndDelete(id);
+    const deletedSocial = await Social.findByIdAndDelete(id);
     if (!deletedSocial) {
       return next(new AppError("Social post not found", 404));
     }
