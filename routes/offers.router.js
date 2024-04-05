@@ -3,97 +3,93 @@ const router = express.Router();
 
 const Offer = require("../models/Offer.model");
 const User = require("../models/User.model");
+const { AppError } = require("../middleware/error-handling");
 // const Location = require("./models/Location.model");
 
 // post to create new offer
-router.post("/api/offers", (req, res) => {
-  const { host } = req.body;
+router.post("/api/offers", async (req, res, next) => {
+  try {
+    const { host, title, description } = req.body;
 
-  User.findOne({ email: host })
-    .then((aHost) => {
-      // If user not found, return error
-      if (!aHost) {
-        return res.status(400).json({ message: "No such user" });
-      }
+    const aHost = await User.findOne({ email: host });
+    // If user not found, return error
+    if (!aHost) {
+      return next(new AppError("Host not found", 404));
+    }
 
-      // Create a new Offer instance with the host's ID
-      const newOffer = new Offer({
-        title: req.body.title,
-        description: req.body.description,
-        host: aHost._id,
-      });
-
-      // Save the new offer
-      newOffer
-        .save()
-        .then((createdOffer) => {
-          console.log("Offer was added", createdOffer);
-          res.status(201).json(createdOffer);
-        })
-        .catch((error) => {
-          console.error("Impossible to create the offer", error);
-          res.status(500).json({ error: "Could not create the offer" });
-        });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ error: "Internal server error" });
+    // Create a new Offer instance with the host's ID
+    const newOffer = new Offer({
+      title,
+      description,
+      host: aHost._id,
     });
+
+    // Save the new offer
+    const createdOffer = await newOffer.save();
+
+    res.status(201).json(createdOffer);
+  } catch (error) {
+    next(new AppError("failed to create offer", 500));
+  }
 });
 
 // get all offers so we can search and find them <- Pierro
-router.get("/api/offers", (req, res, next) => {
-  Offer.find()
-    .populate("host")
-    .then((offers) => {
-      res.status(200).json({ offers: offers });
-    })
-    .catch((error) => {
-      next(error);
-    });
+router.get("/api/offers", async (req, res, next) => {
+  try {
+    const offers = await Offer.find(req.params.id).populate("host");
+    if (!offers) {
+      throw new AppError("offers not found", 404);
+    }
+    res.status(200).json({ offers: offers });
+  } catch (error) {
+    next(error);
+  }
 });
 
 //get a single offer
-router.get("/api/offers/:id", (req, res) => {
-  const offerId = req.params.id;
-  Offer.findById(offerId)
-    // .populate("offers")
-    .then((offer) => {
-      console.log("offer found based on ID", offer);
-      res.status(200).json(offer);
-    })
-    .catch((error) => {
-      console.error(error, "an error prevented from retrieving the offer ID");
-      res.status(500).json({ error });
-    });
+router.get("/api/offers/:id", async (req, res, next) => {
+  try {
+    const offerId = await Offer.findById(req.params.id).populate("host");
+    if (!offerId) {
+      throw new AppError("offer not found", 404);
+    }
+    res.status(200).json(offerId);
+  } catch (error) {
+    next(error);
+  }
 });
 
 // put so we can edit parts of our offers
-router.put("/api/offers/:id", (req, res) => {
-  const offerId = req.params.id;
+router.put("/api/offers/:id", async (req, res, next) => {
+  try {
+    const updatedOffer = await Offer.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      }
+    );
 
-  Offer.findByIdAndUpdate(offerId, req.body, { new: true })
-    .then((updatedOffer) => {
-      console.log("updated offer! ->", updatedOffer);
-      res.status(200).json(updatedOffer);
-    })
-    .catch((error) => {
-      console.error("update unsuccessful", error);
-      res.status(500).json({ error: "internal server error" });
-    });
+    if (!updatedOffer) {
+      throw new AppError("Offer not found", 404);
+    }
+    res.status(200).json(updatedOffer);
+  } catch (error) {
+    next(error);
+  }
 });
 
 // Delete so we can delete our offers
-router.delete("/api/offers/:id", (req, res) => {
-  Offer.findByIdAndDelete(req.params.id)
-    .then(() => {
-      console.log("the offer was deleted");
-      res.status(204).json();
-    })
-    .catch((error) => {
-      console.error("offer could not be deleted", error);
-      res.status(500).json({ error });
-    });
+router.delete("/api/offers/:id", async (req, res, next) => {
+  try {
+    const deletedOffer = await Offer.findByIdAndDelete(req.params.id);
+    if (!deletedOffer) {
+      throw new AppError("could ot delete offer", 404);
+    }
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
 });
 
 //retrieve all offers from given location
