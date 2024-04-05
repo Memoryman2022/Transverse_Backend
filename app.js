@@ -9,6 +9,7 @@ const offerRoutes = require("./routes/offers.router");
 const authRoutes = require("./routes/auth.router");
 const socialRoutes = require("./routes/social.router");
 const reviewRoutes = require("./routes/review.router");
+const userRoutes = require("./routes/user.router");
 
 //connect to mongo
 mongoose
@@ -41,6 +42,7 @@ app.use(authRoutes);
 app.use(socialRoutes);
 app.use(offerRoutes);
 app.use(reviewRoutes);
+app.use(userRoutes);
 
 //protected route for serching user by ID
 const { isAuthenticated } = require("./middleware/auth");
