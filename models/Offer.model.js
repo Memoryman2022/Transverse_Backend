@@ -23,8 +23,7 @@ const offerSchema = new Schema({
   // required: true
   // },
   // utilities: { type: [String], default: [] },
-  email: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  host: { type: String, required: true },
+  host: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 });
 
 module.exports = model("Offer", offerSchema);

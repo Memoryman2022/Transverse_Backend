@@ -7,10 +7,9 @@ const User = require("../models/User.model");
 
 // post to create new offer
 router.post("/api/offers", (req, res) => {
-  //check REQ.BODY!!!
-  const { email } = req.body;
+  const { host } = req.body;
 
-  User.findOne({ email: email })
+  User.findOne({ email: host })
     .then((aHost) => {
       // If user not found, return error
       if (!aHost) {
@@ -21,8 +20,7 @@ router.post("/api/offers", (req, res) => {
       const newOffer = new Offer({
         title: req.body.title,
         description: req.body.description,
-        email: aHost._id, // Assign the host's ID
-        host: req.body.host,
+        host: aHost._id,
       });
 
       // Save the new offer
@@ -46,7 +44,7 @@ router.post("/api/offers", (req, res) => {
 // get all offers so we can search and find them <- Pierro
 router.get("/api/offers", (req, res, next) => {
   Offer.find()
-    // .populate({"offers"})
+    .populate("host")
     .then((offers) => {
       res.status(200).json({ offers: offers });
     })
@@ -88,7 +86,7 @@ router.put("/api/offers/:id", (req, res) => {
 // Delete so we can delete our offers
 router.delete("/api/offers/:id", (req, res) => {
   Offer.findByIdAndDelete(req.params.id)
-    .then((result) => {
+    .then(() => {
       console.log("the offer was deleted");
       res.status(204).json();
     })
