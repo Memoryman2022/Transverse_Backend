@@ -23,6 +23,7 @@ const offerSchema = new Schema({
   // required: true
   // },
   // utilities: { type: [String], default: [] },
+  email: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   host: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 });
 
