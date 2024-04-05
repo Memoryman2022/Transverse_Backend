@@ -1,19 +1,21 @@
 const router = require("express").Router();
-const ReviewModel = require("../models/Review.model");
+const Review = require("../models/Review.model");
 const { AppError } = require("../middleware/error-handling");
-const UserModel = require("../models/User.model");
+const User = require("../models/User.model");
 //Post
 router.post("/create-a-review", async (req, res, next) => {
   try {
-    const { userName, hostName, rating, comments } = req.body;
-    const user = await UserModel.findOne({ name: userName });
-    const host = await UserModel.findOne({ name: hostName });
+    const { user, host, rating, comments } = req.body;
     if (!user || !host) {
       throw new AppError("User or Host not found", 404);
     }
-    const review = await ReviewModel.create({
-      user: user._id,
-      host: host._id,
+
+    const userId = await User.findOne({ email: user });
+    const hostId = await User.findOne({ email: host });
+
+    const review = await Review.create({
+      user: userId._id,
+      host: hostId._id,
       rating,
       comments,
     });
@@ -27,8 +29,7 @@ router.post("/create-a-review", async (req, res, next) => {
 //Get
 router.get("/get-review/:id", async (req, res, next) => {
   try {
-    const review = await ReviewModel.findById(req.params.id);
-
+    const review = await Review.findById(req.params.id).populate("host");
     if (!review) {
       throw new AppError("Review not found", 404);
     }
@@ -41,7 +42,7 @@ router.get("/get-review/:id", async (req, res, next) => {
 //Update
 router.put("/update-a-review/:reviewId", async (req, res, next) => {
   try {
-    const updatedReview = await ReviewModel.findByIdAndUpdate(
+    const updatedReview = await Review.findByIdAndUpdate(
       req.params.reviewId,
       req.body,
       { new: true }
@@ -57,7 +58,7 @@ router.put("/update-a-review/:reviewId", async (req, res, next) => {
 //Delete
 router.delete("/review/:id", async (req, res, next) => {
   try {
-    const deletedReview = await ReviewModel.findByIdAndDelete(req.params.id);
+    const deletedReview = await Review.findByIdAndDelete(req.params.id);
     if (!deletedReview) {
       throw new AppError("Could not delete review", 404);
     }

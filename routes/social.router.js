@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { AppError } = require("../middleware/error-handling");
-
+const User = require("../models/User.model");
 const SocialModel = require("../models/Social.model");
 
 // post
@@ -9,8 +9,10 @@ router.post("/api/social", async (req, res, next) => {
   try {
     const { user, image, caption } = req.body;
 
+    const userId = await User.find({ email: user });
+
     const socialPost = new SocialModel({
-      user,
+      user: userId._id,
       image,
       likes: 0,
       caption,
