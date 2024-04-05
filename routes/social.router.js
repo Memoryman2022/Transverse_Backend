@@ -37,7 +37,7 @@ router.post("/api/social", async (req, res, next) => {
 //   get
 router.get("/api/social", async (req, res, next) => {
   try {
-    const socialPosts = await Social.find();
+    const socialPosts = await Social.find().populate("host")
 
     res.status(200).json({ posts: socialPosts });
   } catch (error) {
