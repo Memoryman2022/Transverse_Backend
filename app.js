@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
 
-const offersRoute = require("./routes/offers.router");
+const offerRoutes = require("./routes/offers.router");
 const authRoutes = require("./routes/auth.router");
 const socialRoutes = require("./routes/social.router");
 const reviewRoutes = require("./routes/review.router");
@@ -39,7 +39,7 @@ app.use(morgan("dev"));
 //Routes
 app.use(authRoutes);
 app.use(socialRoutes);
-app.use(offersRoute);
+app.use(offerRoutes);
 app.use(reviewRoutes);
 
 //protected route for serching user by ID
