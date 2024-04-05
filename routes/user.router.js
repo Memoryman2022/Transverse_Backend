@@ -23,4 +23,32 @@ router.get("/user/:userId", async (req, res, next) => {
   }
 });
 
+router.put("/user-update/:userId", async (req, res, next) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.userId,
+      req.body,
+      { new: true }
+    );
+    if (!updatedUser) {
+      throw new AppError("User not found", 404);
+    }
+    res.status(200).json({ message: "User updated", updatedUser });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete("/user/:userId", async (req, res, next) => {
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.userId);
+    if (!deletedUser) {
+      throw new AppError("Could not delete user", 404);
+    }
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
