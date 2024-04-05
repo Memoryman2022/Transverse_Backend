@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const { AppError } = require("../middleware/error-handling");
 
 // retrieve specific user by ID
-router.get("/:userId", async (req, res, next) => {
+router.get("/user/:userId", async (req, res, next) => {
   try {
     const { userId } = req.params;
     if (!mongoose.Types.ObjectId.isValid(userId)) {

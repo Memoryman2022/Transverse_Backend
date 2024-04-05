@@ -37,7 +37,7 @@ router.post("/api/social", async (req, res, next) => {
 //   get
 router.get("/api/social", async (req, res, next) => {
   try {
-    const socialPosts = await Social.find().populate("host")
+    const socialPosts = await Social.find().populate("host");
 
     res.status(200).json({ posts: socialPosts });
   } catch (error) {
@@ -63,6 +63,7 @@ router.put("/api/social/:id", async (req, res, next) => {
     next(error);
   }
 });
+
 // delete
 router.delete("/api/social/:id", async (req, res, next) => {
   try {
