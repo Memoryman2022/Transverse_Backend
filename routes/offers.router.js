@@ -8,9 +8,9 @@ const User = require("../models/User.model");
 // post to create new offer
 router.post("/api/offers", (req, res) => {
   //check REQ.BODY!!!
-  const { host } = req.body;
+  const { email } = req.body;
 
-  User.findOne({ userName: host })
+  User.findOne({ email: email })
     .then((aHost) => {
       // If user not found, return error
       if (!aHost) {
@@ -21,7 +21,8 @@ router.post("/api/offers", (req, res) => {
       const newOffer = new Offer({
         title: req.body.title,
         description: req.body.description,
-        host: aHost._id, // Assign the host's ID
+        email: aHost._id, // Assign the host's ID
+        host: req.body.host,
       });
 
       // Save the new offer
@@ -45,7 +46,7 @@ router.post("/api/offers", (req, res) => {
 // get all offers so we can search and find them <- Pierro
 router.get("/api/offers", (req, res, next) => {
   Offer.find()
-    .populate("offers")
+    // .populate({"offers"})
     .then((offers) => {
       res.status(200).json({ offers: offers });
     })
@@ -58,7 +59,7 @@ router.get("/api/offers", (req, res, next) => {
 router.get("/api/offers/:id", (req, res) => {
   const offerId = req.params.id;
   Offer.findById(offerId)
-    .populate("offers")
+    // .populate("offers")
     .then((offer) => {
       console.log("offer found based on ID", offer);
       res.status(200).json(offer);
