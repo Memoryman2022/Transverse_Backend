@@ -9,9 +9,11 @@ router.post("/api/social", async (req, res, next) => {
   try {
     const { user, image, caption } = req.body;
 
-    const userId = await User.find({ email: user });
-
-    const socialPost = new Social({
+    const userId = await User.findOne({ email: user });
+    if (!userId) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const socialPost = await Social.create({
       user: userId._id,
       image,
       likes: 0,
@@ -27,6 +29,7 @@ router.post("/api/social", async (req, res, next) => {
       post: newSocialPost,
     });
   } catch (error) {
+    console.log(error, "here");
     next(new AppError("failed to post social", 500));
   }
 });
