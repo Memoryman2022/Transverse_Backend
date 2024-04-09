@@ -10,10 +10,11 @@ const authRoutes = require("./routes/auth.router");
 const socialRoutes = require("./routes/social.router");
 const reviewRoutes = require("./routes/review.router");
 const userRoutes = require("./routes/user.router");
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017";
 
 //connect to mongo
 mongoose
-  .connect("mongodb://127.0.0.1:27017")
+  .connect(MONGO_URI)
   .then(console.log("Connected to MongoDB"))
   .catch((err) => {
     console.log("There was an error connecting to the DB", err);
