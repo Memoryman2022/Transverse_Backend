@@ -4,6 +4,16 @@ const User = require("../models/User.model");
 const mongoose = require("mongoose");
 const { AppError } = require("../middleware/error-handling");
 
+route.get("user", async (req, res, next) => {
+  try {
+    const user = await User.find();
+    if (!user) {
+      throw new AppError("Users not found", 404);
+    }
+  } catch (err) {
+    next(err);
+  }
+});
 // retrieve specific user by ID
 router.get("/user/:userId", async (req, res, next) => {
   try {
