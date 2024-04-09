@@ -4,7 +4,7 @@ const User = require("../models/User.model");
 const mongoose = require("mongoose");
 const { AppError } = require("../middleware/error-handling");
 
-route.get("user", async (req, res, next) => {
+route.get("/user", async (req, res, next) => {
   try {
     const user = await User.find();
     if (!user) {
