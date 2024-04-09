@@ -11,6 +11,7 @@ const socialRoutes = require("./routes/social.router");
 const reviewRoutes = require("./routes/review.router");
 const userRoutes = require("./routes/user.router");
 
+
 //connect to mongo
 mongoose
   .connect("mongodb://127.0.0.1:27017")
@@ -43,9 +44,11 @@ app.use(socialRoutes);
 app.use(offerRoutes);
 app.use(reviewRoutes);
 app.use(userRoutes);
+app.use(authenticateToken);
 
 //protected route for serching user by ID
 const { isAuthenticated } = require("./middleware/auth");
+const {authenticateToken} = require("./middleware/authenticateToken.js")
 // const userRouter = require("./routes/user.router");
 // app.use("/api/users", isAuthenticated, userRouter);
 
