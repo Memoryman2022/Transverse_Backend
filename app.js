@@ -46,11 +46,9 @@ app.use(socialRoutes);
 app.use(offerRoutes);
 app.use(reviewRoutes);
 app.use(userRoutes);
+app.use(authenticateToken);
 
-//protected route for serching user by ID
-const { isAuthenticated } = require("./middleware/auth");
-// const userRouter = require("./routes/user.router");
-// app.use("/api/users", isAuthenticated, userRouter);
+const { authenticateToken } = require("./middleware/authenticateToken.js");
 
 //Error handler
 app.use(errorHandler);
