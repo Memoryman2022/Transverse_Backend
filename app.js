@@ -10,7 +10,9 @@ const authRoutes = require("./routes/auth.router");
 const socialRoutes = require("./routes/social.router");
 const reviewRoutes = require("./routes/review.router");
 const userRoutes = require("./routes/user.router");
+
 const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017";
+const FRONTEND_URI = process.env.FRONTEND_URI || "http://localhost:5173";
 
 //connect to mongo
 mongoose
@@ -32,7 +34,7 @@ const {
 //CORS
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5005"],
+    origin: [FRONTEND_URI, "http://localhost:5005"],
   })
 );
 app.use(express.json());
