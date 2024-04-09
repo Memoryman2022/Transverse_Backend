@@ -10,6 +10,7 @@ route.get("/user", async (req, res, next) => {
     if (!user) {
       throw new AppError("Users not found", 404);
     }
+    res.status(200).json(user);
   } catch (err) {
     next(err);
   }
