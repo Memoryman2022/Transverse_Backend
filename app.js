@@ -10,6 +10,7 @@ const authRoutes = require("./routes/auth.router");
 const socialRoutes = require("./routes/social.router");
 const reviewRoutes = require("./routes/review.router");
 const userRoutes = require("./routes/user.router");
+const { authenticateToken } = require("./middleware/authenticateToken.js");
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017";
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
@@ -47,8 +48,6 @@ app.use(offerRoutes);
 app.use(reviewRoutes);
 app.use(userRoutes);
 app.use(authenticateToken);
-
-const { authenticateToken } = require("./middleware/authenticateToken.js");
 
 //Error handler
 app.use(errorHandler);
