@@ -71,10 +71,6 @@ router.post("/auth/login", async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: "6h" }
     );
-    res.cookie("jwtToken", token, {
-      httpOnly: true,
-      maxAge: 6 * 60 * 60 * 1000,
-    });
     res.status(200).json({ token });
   } catch (err) {
     next(err);
