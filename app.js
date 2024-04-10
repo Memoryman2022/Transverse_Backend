@@ -10,6 +10,7 @@ const authRoutes = require("./routes/auth.router");
 const socialRoutes = require("./routes/social.router");
 const reviewRoutes = require("./routes/review.router");
 const userRoutes = require("./routes/user.router");
+const {authenticateToken} = require("./middleware/authenticateToken.js")
 
 
 //connect to mongo
@@ -44,11 +45,12 @@ app.use(socialRoutes);
 app.use(offerRoutes);
 app.use(reviewRoutes);
 app.use(userRoutes);
-app.use(authenticateToken);
+//app.use(authenticateToken);
+
 
 //protected route for serching user by ID
 const { isAuthenticated } = require("./middleware/auth");
-const {authenticateToken} = require("./middleware/authenticateToken.js")
+
 // const userRouter = require("./routes/user.router");
 // app.use("/api/users", isAuthenticated, userRouter);
 

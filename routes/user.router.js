@@ -46,7 +46,7 @@ router.put("/protected/user-update/:userId", authenticateToken, async (req, res,
 });
 
 //delete user-protected
-router.delete("/protected/user/:userId", authenticateToken, async (req, res, next) => {
+router.delete("/protected/user/:userId", authenticateToken , async (req, res, next) => {
   try {
     const { userId } = req.params;
     const deletedUser = await User.findByIdAndDelete(userId);
