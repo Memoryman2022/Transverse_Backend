@@ -76,16 +76,4 @@ router.delete(
   }
 );
 
-router.get("/user", async (req, res, next) => {
-  try {
-    const user = await User.find();
-    if (!user) {
-      throw new AppError("Users not found", 404);
-    }
-    res.status(200).json(user);
-  } catch (err) {
-    next(err);
-  }
-});
-
 module.exports = router;
