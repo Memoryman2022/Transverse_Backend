@@ -8,39 +8,36 @@ const { AppError } = require("../middleware/error-handling");
 //protected routes
 //find user-protected
 
-router.get(
-  "/protected/user/:userId",
-  authenticateToken,
-  async (req, res, next) => {
-    try {
-      const { userId } = req.params;
+router.get("/protected/user", authenticateToken, async (req, res, next) => {
+  try {
+    const userId = req.payload.userId;
 
-      if (!mongoose.Types.ObjectId.isValid(userId)) {
-        throw new AppError("Invalid user ID", 400);
-      }
-
-      const user = await User.findById(userId);
-
-      if (!user) {
-        throw new AppError("User not found", 404);
-      }
-
-      const { _id, email, userName } = user;
-
-      res.status(200).json({ _id, email, userName });
-    } catch (error) {
-      next(error);
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new AppError("Invalid user ID", 400);
     }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new AppError("User not found", 404);
+    }
+
+    const { _id, email, userName } = user;
+
+    res.status(200).json({ _id, email, userName });
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 //update user-protected
 router.put(
-  "/protected/user-update/:userId",
+  "/protected/user-update",
   authenticateToken,
   async (req, res, next) => {
     try {
-      const { userId } = req.params;
+      const userId = req.payload.userId;
+
       const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
         new: true,
       });
@@ -57,23 +54,19 @@ router.put(
 );
 
 //delete user-protected
-router.delete(
-  "/protected/user/:userId",
-  authenticateToken,
-  async (req, res, next) => {
-    try {
-      const { userId } = req.params;
-      const deletedUser = await User.findByIdAndDelete(userId);
+router.delete("/protected/user/", authenticateToken, async (req, res, next) => {
+  try {
+    const userId = req.payload.userId;
+    const deletedUser = await User.findByIdAndDelete(userId);
 
-      if (!deletedUser) {
-        throw new AppError("Could not delete user", 404);
-      }
-
-      res.status(204).end();
-    } catch (error) {
-      next(error);
+    if (!deletedUser) {
+      throw new AppError("Could not delete user", 404);
     }
+
+    res.status(204).end();
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 module.exports = router;
