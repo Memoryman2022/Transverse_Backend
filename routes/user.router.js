@@ -5,8 +5,6 @@ const mongoose = require("mongoose");
 const { authenticateToken } = require("../middleware/authenticateToken");
 const { AppError } = require("../middleware/error-handling");
 
-router.use(authenticateToken);
-
 //protected routes
 //find user-protected
 
@@ -27,9 +25,9 @@ router.get(
         throw new AppError("User not found", 404);
       }
 
-      const { _id, email, name } = user;
+      const { _id, email, userName } = user;
 
-      res.status(200).json({ _id, email, name });
+      res.status(200).json({ _id, email, userName });
     } catch (error) {
       next(error);
     }
