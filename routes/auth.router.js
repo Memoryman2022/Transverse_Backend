@@ -71,7 +71,7 @@ router.post("/auth/login", async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: "6h" }
     );
-    localStorage.setItem("jwtToken", token);
+    // localStorage.setItem("jwtToken", token);
     res.status(200).json({ token });
   } catch (err) {
     next(err);
