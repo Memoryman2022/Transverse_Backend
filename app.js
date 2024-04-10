@@ -35,7 +35,7 @@ const {
 //CORS
 app.use(
   cors({
-    origin: [FRONTEND_URL, "http://localhost:5005"],
+    origin: [FRONTEND_URL],
   })
 );
 app.use(express.json());

@@ -78,8 +78,6 @@ router.delete(
   }
 );
 
-router.use(authenticateToken);
-
 router.get("/user", async (req, res, next) => {
   try {
     const user = await User.find();
