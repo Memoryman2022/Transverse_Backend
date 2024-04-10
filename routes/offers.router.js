@@ -11,7 +11,7 @@ const { AppError } = require("../middleware/error-handling");
 router.post("/api/offers", authenticateToken, async (req, res, next) => {
   try {
     const { title, description } = req.body;
-    const hostId = req.user.id;
+    const hostId = req.payload.userId;
 
     const newOffer = new Offer({
       title,
