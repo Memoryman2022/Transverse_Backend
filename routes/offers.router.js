@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { authenticateToken } = require("../middleware/authenticateToken");
 
 const Offer = require("../models/Offer.model");
 const User = require("../models/User.model");
@@ -7,29 +8,21 @@ const { AppError } = require("../middleware/error-handling");
 // const Location = require("./models/Location.model");
 
 // post to create new offer
-router.post("/api/offers", async (req, res, next) => {
+router.post("/api/offers", authenticateToken, async (req, res, next) => {
   try {
-    const { host, title, description } = req.body;
+    const { title, description } = req.body;
+    const hostId = req.user.id;
 
-    const aHost = await User.findOne({ email: host });
-    // If user not found, return error
-    if (!aHost) {
-      return next(new AppError("Host not found", 404));
-    }
-
-    // Create a new Offer instance with the host's ID
     const newOffer = new Offer({
       title,
       description,
-      host: aHost._id,
+      host: hostId,
     });
 
-    // Save the new offer
     const createdOffer = await newOffer.save();
-
     res.status(201).json(createdOffer);
   } catch (error) {
-    next(new AppError("failed to create offer", 500));
+    next(new AppError("Failed to create offer", 500));
   }
 });
 
