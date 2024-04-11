@@ -40,13 +40,23 @@ router.post("/auth/registration", async (req, res, next) => {
       password,
       bcrypt.genSaltSync(saltRounds)
     );
+
     const createdUser = await User.create({
       email,
       password: hashedPassword,
       userName,
     });
+
+    const token = jwt.sign(
+      { userId: createdUser._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "6h" }
+    );
+
     const { _id } = createdUser;
-    res.status(201).json({ user: { email, userName, _id } });
+    res
+      .status(201)
+      .json({ token, user: { email, userName, _id: createdUser._id } });
   } catch (err) {
     next(err);
   }
