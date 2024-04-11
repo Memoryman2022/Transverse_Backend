@@ -5,15 +5,15 @@ const userSchema = new Schema({
   userName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  // spokenLanguages: [
-  //   {
-  //     type: mongoose.Schema.Types.ObjectId,
-  //     // required: true,
-  //     ref: "Language",
-  //   },
-  // ],
-  // hostedLanguages: [{ type: "String" }], // TODO: Also reference Language
-  // location: { type: "String" },
+  spokenLanguages: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Language",
+    },
+  ],
+  hostedLanguages: [{ type: "String" }], // TODO: Also reference Language
+  location: { type: "String" },
 });
 
 module.exports = model("User", userSchema);
