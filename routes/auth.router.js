@@ -53,7 +53,7 @@ router.post("/auth/registration", async (req, res, next) => {
       { expiresIn: "6h" }
     );
 
-    const { _id } = createdUser;
+    // const { _id } = createdUser;
     res
       .status(201)
       .json({ token, user: { email, userName, _id: createdUser._id } });
