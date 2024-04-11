@@ -5,7 +5,7 @@ const offerSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   location: { type: String, required: false },
-
+  offerImage: { type: String, default: "" },
   availableFrom: {
     type: Date,
     required: true,

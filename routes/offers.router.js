@@ -12,6 +12,7 @@ router.post("/api/offers", authenticateToken, async (req, res, next) => {
     const {
       title,
       description,
+      offerImage,
       location,
       availableFrom,
       availableUntil,
@@ -22,6 +23,7 @@ router.post("/api/offers", authenticateToken, async (req, res, next) => {
     const newOffer = new Offer({
       title,
       description,
+      offerImage,
       location,
       availableFrom,
       availableUntil,
