@@ -1,10 +1,5 @@
 const { expressjwt: jwt } = require("express-jwt");
 
-//this variable will tell us if the token is valid and not expired
-//it takes four arguments
-//1. secret 2. algorithm 3. name of where the data will be in the req 4. method named getToken that grabs the token from the headers
-
-//this is the function that is going to check the headers for the token and return it if its found
 const getTokenFromHeaders = (req) => {
   //check if there is something called authorization in the headers && if the first word is Bearer
   if (

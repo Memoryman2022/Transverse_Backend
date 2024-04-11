@@ -2,17 +2,10 @@ const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
 const offerSchema = new Schema({
-  title: { type: String, required: true }, //presentation
-  description: { type: String, required: true }, // size, location, proximity to supermarket
-  location: { type: String, required: true }, // mapping TODO: Find out if String type or something else?
-  availableLanguages: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Language",
-      required: true,
-      default: [],
-    },
-  ],
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  location: { type: String, required: false },
+
   availableFrom: {
     type: Date,
     required: true,
