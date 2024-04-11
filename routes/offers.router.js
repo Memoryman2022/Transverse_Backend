@@ -27,7 +27,7 @@ router.post("/api/offers", authenticateToken, async (req, res, next) => {
 });
 
 // get all offers so we can search and find them <- Pierro
-router.get("/api/offers", async (req, res, next) => {
+router.get("/api/offers/:id", async (req, res, next) => {
   try {
     const offers = await Offer.find(req.params.id).populate("host");
     if (!offers) {
@@ -87,20 +87,20 @@ router.delete("/api/offers/:id", async (req, res, next) => {
 
 //retrieve all offers from given location
 
-router.get("/api/offers/location/:locationId", (req, res, next) => {
-  const { locationId } = req.params;
+// router.get("/api/offers/location/:locationId", (req, res, next) => {
+//   const { locationId } = req.params;
 
-  Offer.find({ location: locationId })
-    .populate("location")
-    .then((offersByLocation) => {
-      if (!offersByLocation) {
-        return res.status(400).json({ error: "location not found at all" });
-      }
-      res.status(200).json(offersByLocation);
-    })
-    .catch((error) => {
-      next(error);
-    });
-});
+//   Offer.find({ location: locationId })
+//     .populate("location")
+//     .then((offersByLocation) => {
+//       if (!offersByLocation) {
+//         return res.status(400).json({ error: "location not found at all" });
+//       }
+//       res.status(200).json(offersByLocation);
+//     })
+//     .catch((error) => {
+//       next(error);
+//     });
+// });
 
 module.exports = router;
