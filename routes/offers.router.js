@@ -34,7 +34,7 @@ router.post("/api/offers", async (req, res, next) => {
 });
 
 // get all offers so we can search and find them <- Pierro
-router.get("/api/offers", async (req, res, next) => {
+router.get("/api/offers/:id", async (req, res, next) => {
   try {
     const offers = await Offer.find(req.params.id).populate("host");
     if (!offers) {
