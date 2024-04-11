@@ -5,9 +5,7 @@ const mongoose = require("mongoose");
 const { authenticateToken } = require("../middleware/authenticateToken");
 const { AppError } = require("../middleware/error-handling");
 
-//protected routes
-//find user-protected
-
+// Find user (protected)
 router.get("/protected/user", authenticateToken, async (req, res, next) => {
   try {
     const userId = req.payload.userId;
@@ -22,15 +20,29 @@ router.get("/protected/user", authenticateToken, async (req, res, next) => {
       throw new AppError("User not found", 404);
     }
 
-    const { _id, email, userName } = user;
+    const {
+      _id,
+      email,
+      userName,
+      spokenLanguages,
+      hostedLanguages,
+      profileImage,
+    } = user;
 
-    res.status(200).json({ _id, email, userName });
+    res.status(200).json({
+      _id,
+      email,
+      userName,
+      spokenLanguages,
+      hostedLanguages,
+      profileImage,
+    });
   } catch (error) {
     next(error);
   }
 });
 
-//update user-protected
+// Update user (protected)
 router.put(
   "/protected/user-update",
   authenticateToken,
@@ -38,23 +50,35 @@ router.put(
     try {
       const userId = req.payload.userId;
 
-      const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
-        new: true,
-      });
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          ...req.body,
+          spokenLanguages: req.body.spokenLanguages
+            .split(",")
+            .map((lang) => lang.trim()),
+          hostedLanguages: req.body.hostedLanguages
+            .split(",")
+            .map((lang) => lang.trim()),
+        },
+        {
+          new: true,
+        }
+      );
 
       if (!updatedUser) {
-        throw new AppError("user not found", 404);
+        throw new AppError("User not found", 404);
       }
 
-      res.status(200).json({ message: "user updated", updatedUser });
+      res.status(200).json({ message: "User updated", updatedUser });
     } catch (error) {
       next(error);
     }
   }
 );
 
-//delete user-protected
-router.delete("/protected/user/", authenticateToken, async (req, res, next) => {
+// Delete user (protected)
+router.delete("/protected/user", authenticateToken, async (req, res, next) => {
   try {
     const userId = req.payload.userId;
     const deletedUser = await User.findByIdAndDelete(userId);
