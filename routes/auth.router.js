@@ -12,7 +12,14 @@ const saltRounds = 10;
 //Post /registration
 router.post("/auth/registration", async (req, res, next) => {
   try {
-    const { userName, email, password } = req.body;
+    const {
+      userName,
+      email,
+      password,
+      spokenLanguages,
+      hostedLanguages,
+      profileImage,
+    } = req.body;
 
     if (userName === "" || email === "" || password === "") {
       throw new AppError("Please fill out the registration fields", 400);
@@ -45,6 +52,9 @@ router.post("/auth/registration", async (req, res, next) => {
       email,
       password: hashedPassword,
       userName,
+      spokenLanguages,
+      hostedLanguages,
+      profileImage,
     });
 
     const token = jwt.sign(
@@ -54,9 +64,7 @@ router.post("/auth/registration", async (req, res, next) => {
     );
 
     // const { _id } = createdUser;
-    res
-      .status(201)
-      .json({ token, user: { email, userName, _id: createdUser._id } });
+    res.status(201).json({ token, createdUser });
   } catch (err) {
     next(err);
   }
