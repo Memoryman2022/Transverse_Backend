@@ -53,7 +53,7 @@ router.get("/api/offers/:id", async (req, res, next) => {
 });
 
 // put so we can edit parts of our offers
-router.put("/api/offers/:id", async (req, res, next) => {
+router.put("/api/offers/:id", authenticateToken, async (req, res, next) => {
   try {
     const updatedOffer = await Offer.findByIdAndUpdate(
       req.params.id,
