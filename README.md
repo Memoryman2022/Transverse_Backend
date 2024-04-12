@@ -3,9 +3,9 @@
 
 MONGO AND EXPRESS <br><br>
 At the base of the backend is crafted with MongoDB, useful for its flexibility and scalability. This choice allowed us to seamlessly store and retrieve data for our application, facilitating features like user registration, language offers, and connecting users. Express and Node.js together formed the environment for our server-side application, handling requests and responses, while integrating middleware for logging, CORS, and error handling added layers of functionality and security. The incorporation of authentication middleware, powered by JWT tokens, ensured that our application remained secure and user information private, offering peace of mind to our users.
-<br>
+<br><br>
 THE ROUTES<br><br>
 Our routes are lifeblood of our backend, serving as pathways through which data travels between the server and the client. These routes, painstakingly designed and implemented, support various functionalities including user authentication, social interactions, and personalized offers. Each route is crafted to meet the specific needs of our application, ensuring that users can navigate our platform with ease and reliability. The structured approach to routing not only simplifies development and maintenance but also enhances the user experience by providing clear and efficient access to the application's features.
-<br>
+<br><br>
 SUMMERY<br><br>
 The journey of developing this full-stack application was both challenging and rewarding. It pushed us to explore new technologies, think critically about utility and functionality, and ultimately deliver a product that we feel shows promise. The backend, with its robust architecture and secure, efficient routes, stands as our best acheivment in my opinion, a testament to the power of the MERN stack and the possibilities it unlocks for full-stack developers. As we move forward, we are excited to see how this project evolves.
