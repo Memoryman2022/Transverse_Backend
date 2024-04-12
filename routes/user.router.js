@@ -50,21 +50,94 @@ router.put(
     try {
       const userId = req.payload.userId;
 
-      const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        {
-          ...req.body,
-          spokenLanguages: req.body.spokenLanguages
-            .split(",")
-            .map((lang) => lang.trim()),
-          hostedLanguages: req.body.hostedLanguages
-            .split(",")
-            .map((lang) => lang.trim()),
-        },
-        {
-          new: true,
-        }
-      );
+      const updateData = {
+        userName: req.body.userName,
+        location: req.body.location,
+        profileImage: req.body.profileImage,
+      };
+
+      if (req.body.spokenLanguages) {
+        updateData.spokenLanguages = req.body.spokenLanguages
+          .split(",")
+          .map((lang) => lang.trim());
+      }
+
+      if (req.body.hostedLanguages) {
+        updateData.hostedLanguages = req.body.hostedLanguages
+          .split(",")
+          .map((lang) => lang.trim());
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+        new: true,
+      });
+
+      if (!updatedUser) {
+        throw new AppError("User not found", 404);
+      }
+
+      if (!updatedUser) {
+        throw new AppError("User not found", 404);
+      }
+
+      res.status(200).json({ message: "User updated", updatedUser });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// Delete user (protected)
+router.delete("/protected/user", authenticateToken, async (req, res, next) => {
+  try {
+    const userId = req.payload.userId;
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      throw new AppError("Could not delete user", 404);
+    }
+
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+});
+
+module.exports = router;
+
+// Update user (protected)
+router.put(
+  "/protected/user-update",
+  authenticateToken,
+  async (req, res, next) => {
+    try {
+      const userId = req.payload.userId;
+
+      const updateData = {
+        userName: req.body.userName,
+        location: req.body.location,
+        profileImage: req.body.profileImage,
+      };
+
+      if (req.body.spokenLanguages) {
+        updateData.spokenLanguages = req.body.spokenLanguages
+          .split(",")
+          .map((lang) => lang.trim());
+      }
+
+      if (req.body.hostedLanguages) {
+        updateData.hostedLanguages = req.body.hostedLanguages
+          .split(",")
+          .map((lang) => lang.trim());
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+        new: true,
+      });
+
+      if (!updatedUser) {
+        throw new AppError("User not found", 404);
+      }
 
       if (!updatedUser) {
         throw new AppError("User not found", 404);
